@@ -9,3 +9,5 @@ build:
   script: 
     - echo "Beginning build. . ."
     - cargo build
+  tags:
+    - docker
