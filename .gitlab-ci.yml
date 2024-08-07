@@ -2,7 +2,7 @@ stages:
   - build
 
 default:
-  image: rust:bullseye-slim 
+  image: rust:slim 
 
 build:
   stage: build
