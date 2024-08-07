@@ -1,0 +1,11 @@
+stages:
+  - build
+
+default:
+  image: debian:bullseye-slim
+
+build:
+  stage: build
+  script: 
+    - echo "Beginning build. . ."
+    - cargo build
