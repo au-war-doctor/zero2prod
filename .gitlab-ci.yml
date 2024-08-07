@@ -2,7 +2,7 @@ stages:
   - build
 
 default:
-  image: debian:bullseye-slim
+  image: rust:bullseye-slim 
 
 build:
   stage: build
