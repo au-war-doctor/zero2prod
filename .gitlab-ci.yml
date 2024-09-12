@@ -10,4 +10,4 @@ build:
     - echo "Beginning build. . ."
     - cargo build
   tags:
-    - docker
+    - hpt730
