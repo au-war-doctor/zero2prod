@@ -1,5 +1,6 @@
 stages:
   - build
+  - test
 
 default:
   image: rust:slim 
@@ -14,3 +15,15 @@ build:
     - cargo build
   tags:
     - hpt730
+
+test:
+  stage: test
+  before_script:
+    - apt update -qq && apt install -y -qq pkg-config && apt install -y -qq openssl
+    - apt install -y -qq libssl-dev
+  script:
+    - echo "Beginning test. . ."
+    - cargo test
+  tags:
+    - hpt730  
+
