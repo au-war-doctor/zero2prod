@@ -7,7 +7,7 @@ default:
 build:
   stage: build
   before_script:
-    - apt update -qq && apt install -y -qq pkg-config
+    - apt update -qq && apt install -y -qq pkg-config && apt install -y -qq openssl
   script: 
     - echo "Beginning build. . ."
     - cargo build
