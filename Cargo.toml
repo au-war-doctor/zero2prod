@@ -8,6 +8,7 @@ actix-web = "4.9.0"
 actix-rt = "2.10.0"
 reqwest = "0.12.7"
 tokio = "1.40.0"
+serde = {version = "1.0.210", features = ["derive"]}
 
 [lib]
 path = "src/lib.rs"

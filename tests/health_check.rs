@@ -19,6 +19,53 @@ async fn health_check_works(){
 
 }
 
+// Test case: form data is fine
+#[actix_rt::test]
+async fn subscribe_returns_200_for_valid_form_data() {
+
+    let address = spawn_app();
+    let client = reqwest::Client::new();
+    let body = "name=le%20guin&email=ursula_le_guin%40gmail.com";
+
+    let response = client
+        .post(format!("{}/subscribe", address))
+        .header("Content-Type", "application/x-www-form-urlencoded")
+        .body(body)
+        .send()
+        .await
+        .expect("Failed to execute request");
+
+    // response might come back as a string, careful with types there
+    assert_eq!(200, response.status().as_u16());
+}
+
+// Test case: form data is missing a portion
+#[actix_rt::test]
+async fn subscribe_returns_400_when_data_is_missing() {
+    let address = spawn_app();
+    let client = reqwest::Client::new();
+
+    let test_cases = vec![("name=le%20guin", "missing the email"),
+        ("email=ursula_le_guin%40gmail.com", "missing the name"),
+        ("", "missing both name and email")];
+
+    for (body, error) in test_cases {
+        let response = client
+            .post(format!("{}/subscribe", address))
+            .header("Content-Type", "application/x-www-form-urlencoded")
+            .body(body)
+            .send()
+            .await
+            .expect("Failed to execute request");
+
+        assert_eq!(400, response.status().as_u16(),
+            "The API should have failed with 400 Bad Request but didn't: {}", error);
+    }
+
+
+}
+
+
 fn spawn_app() -> String {
     let listener = TcpListener::bind("127.0.0.1:0")
         .expect("Failed to bind to an available port");
