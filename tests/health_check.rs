@@ -1,5 +1,3 @@
-// use zero2prod::main;
-
 use std::net::TcpListener;
 
 #[actix_rt::test]
@@ -71,7 +69,7 @@ fn spawn_app() -> String {
         .expect("Failed to bind to an available port");
 
     let port = listener.local_addr().unwrap().port();
-    let server = zero2prod::run(listener)
+    let server = zero2prod::startup::run(listener)
         .expect("Failed to bind server to address");
     let _ = tokio::spawn(server);
 
