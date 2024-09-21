@@ -1,0 +1,7 @@
+application_port: 0
+database:
+  host: "10.10.0.6"
+  port: 5432
+  username: viperpostgres
+  password: "DOCTORUH"
+  database_name: "zero2prod"
