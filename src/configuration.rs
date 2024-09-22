@@ -1,4 +1,4 @@
-use config::{File, FileFormat};
+use config::FileFormat;
 
 #[derive(serde::Deserialize)]
 pub struct Settings{
@@ -17,9 +17,18 @@ pub struct DatabaseSettings{
 
 // read application settings from a flat file named configuration:
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {
+
+    let base_path = std::env::current_dir().expect("Failed to find current directory");
     let settings = config::Config::builder()
-    .add_source(config::File::new("configuration.rs", FileFormat::Yaml))
+    .add_source(config::File::from(base_path.join("src/configuration.yaml")))
     .build()?;
 
     settings.try_deserialize::<Settings>()
+}
+
+impl DatabaseSettings {
+    pub fn connection_string(&self) -> String {
+        format!("postgres://{}:{}@{}:{}/{}",
+        self.username, self.password, self.host, self.port, self.database_name)
+    }
 }
