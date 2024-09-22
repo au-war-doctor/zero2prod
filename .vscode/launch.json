@@ -13,6 +13,16 @@
             "args": [],
             "cwd": "${workspaceFolder}",
             "console": "externalTerminal"
+        },
+        {
+            "name": "Test",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/target/debug/zero2prod",
+            "preLaunchTask": "rust: cargo test",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "console": "externalTerminal"
         }
     ]
 }
