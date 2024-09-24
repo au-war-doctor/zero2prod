@@ -28,7 +28,7 @@ async fn subscribe_returns_200_for_valid_form_data() {
     let configuration = get_configuration().expect("Failed to read configuration");
     let connection_string = configuration.database.connection_string();
 
-    let connection = PgConnection::connect(&connection_string)
+    let mut connection = PgConnection::connect(&connection_string)
         .await
         .expect("Failed to connect to postgres database");
     let client = reqwest::Client::new();
@@ -44,6 +44,12 @@ async fn subscribe_returns_200_for_valid_form_data() {
 
     // response might come back as a string, careful with types there
     assert_eq!(200, response.status().as_u16());
+
+    // let saved = sqlx::query!("SELECT email, name FROM subscriptions",)
+    //     .fetch_one(&mut connection)
+    //     .await
+    //     .expect("Failed to fetch saved subscription");
+
 }
 
 // Test case: form data is missing a portion
