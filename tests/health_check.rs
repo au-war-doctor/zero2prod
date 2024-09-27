@@ -1,12 +1,11 @@
 use std::net::TcpListener;
-use sqlx::PgPool;
+use sqlx::{Pool, Postgres};
 
-use zero2prod::configuration::get_configuration;
 
-#[actix_rt::test]
-async fn health_check_works(){
+#[sqlx::test(migrations = "./migrations")]
+async fn health_check_works(pool: Pool<Postgres>) -> sqlx::Result<()>{
 
-    let app = spawn_app().await;
+    let app = spawn_app(pool).await;
     let client = reqwest::Client::new();
 
     let response = client
@@ -17,14 +16,14 @@ async fn health_check_works(){
 
     assert!(response.status().is_success());
     assert_eq!(Some(0), response.content_length());
-
+    Ok(())
 }
 
 // Test case: form data is fine
-#[actix_rt::test]
-async fn subscribe_returns_200_for_valid_form_data() {
+#[sqlx::test(migrations = "./migrations")]
+async fn subscribe_returns_200_for_valid_form_data(pool: Pool<Postgres>) -> sqlx::Result<()> {
 
-    let app = spawn_app().await;
+    let app = spawn_app(pool).await;
     let client = reqwest::Client::new();
     let body = "name=le%20guin&email=ursula_le_guin%40gmail.com";
 
@@ -38,12 +37,14 @@ async fn subscribe_returns_200_for_valid_form_data() {
 
     // response might come back as a string, careful with types there
     assert_eq!(200, response.status().as_u16());
+
+    Ok(())
 }
 
-// Test case: form data is missing a portion
-#[actix_rt::test]
-async fn subscribe_returns_400_when_data_is_missing() {
-    let app = spawn_app().await;
+//Test case: form data is missing a portion
+#[sqlx::test(migrations = "./migrations")]
+async fn subscribe_returns_400_when_data_is_missing(pool: Pool<Postgres>) -> sqlx::Result<()>{
+    let app = spawn_app(pool).await;
     let client = reqwest::Client::new();
 
     let test_cases = vec![("name=le%20guin", "missing the email"),
@@ -62,26 +63,21 @@ async fn subscribe_returns_400_when_data_is_missing() {
         assert_eq!(400, response.status().as_u16(),
             "The API should have failed with 400 Bad Request but didn't: {}", error);
     }
-
-
+    Ok(())
 }
 
 pub struct TestApp {
     pub address: String,
-    pub db_pool: PgPool
+    pub db_pool: Pool<Postgres>
 }
 
-async fn spawn_app() -> TestApp {
+async fn spawn_app(pool: Pool<Postgres>) -> TestApp {
+
     let listener = TcpListener::bind("127.0.0.1:0")
         .expect("Failed to bind to an available port");
 
     let port = listener.local_addr().unwrap().port();
-    let config = get_configuration().expect("Failed to read from config file");
     let address = format!("http://127.0.0.1:{}", port);
-
-    let pool = PgPool::connect(&config.database.connection_string())
-                   .await
-                   .expect("Failed to connect to postgres");
 
     let server = zero2prod::startup::run(listener, pool.clone())
         .expect("Failed to bind server to address");
