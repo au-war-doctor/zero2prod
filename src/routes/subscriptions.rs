@@ -29,9 +29,12 @@ pub async fn subscribe(
     .execute(pool.as_ref()) //immutable reference to pgconnection wrapped by web::Data
     .await
     {
-        Ok(_) => HttpResponse::Ok().finish(),
+        Ok(_) => {
+            log::info!("New subscriber details have been saved");
+            HttpResponse::Ok().finish()
+        },
         Err(e) => {
-            println!("Failed to execute postgres query: {}", e);
+            log::error!("Failed to execute postgres query: {:?}", e);
             HttpResponse::InternalServerError().finish()
         }
     }
