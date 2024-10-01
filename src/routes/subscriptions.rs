@@ -3,6 +3,7 @@ use actix_web::web;
 use sqlx::PgPool;
 use uuid::Uuid;
 use chrono::Utc;
+use tracing_futures::Instrument;
 
 #[derive(serde::Deserialize)]
 pub struct FormData {
@@ -19,11 +20,15 @@ pub async fn subscribe(
     //unique ID to help with post mortem
     let request_id = Uuid::new_v4();
 
+    let request_span = tracing::info_span!("Adding a new subscriber", %request_id, subscriber_email=%form.email, subscriber_name=%form.name);
+    let _request_span_guard = request_span.enter();// uhhhh apparently bad practice. !REMOVE-LATER
+
+    let query_span = tracing::info_span!("Saving new subscriber details in the database");
+
+    // this tracing crate has 'oh and also send a log' feature... although observability best practices
+    // shows the two approaches used in different, not identical, contexts.
     tracing::info!("request_id {} - Adding '{}' '{}' as a new subscriber", request_id, form.email, form.name);
     tracing::info!("request_id {} - Saving new subscriber details in database0", request_id);
-
-    // Irrespective of success, get logging in there for post mortem purposes
-    //log::info!("request_id {} - Adding '{}' '{}' as a new subcriber", request_id, form.email, form.name);
 
     match sqlx::query!(
         r#"
@@ -36,6 +41,7 @@ pub async fn subscribe(
         Utc::now()
         )
         .execute(pool.as_ref()) //immutable reference to pgconnection wrapped by web::Data
+        .instrument(query_span)
         .await
         {
             Ok(_) => {
