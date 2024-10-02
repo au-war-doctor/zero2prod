@@ -20,10 +20,10 @@ pub fn get_subscriber(
 
     let formatting_layer = BunyanFormattingLayer::new(name, std::io::stdout);
 
-    let subscriber = Registry::default()
+    Registry::default()
         .with(env_filter)
         .with(JsonStorageLayer)
-        .with(formatting_layer);
+        .with(formatting_layer)
     }
 
 pub fn init_subscriber(subscriber: impl Subscriber + Send + Sync) {
