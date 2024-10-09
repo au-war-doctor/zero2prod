@@ -1,13 +1,13 @@
 use std::net::TcpListener;
 use sqlx::{Pool, Postgres};
-use tracing::subscriber;
-use zero2prod::configuration::get_configuration;
+//use tracing::subscriber;
+//use zero2prod::configuration::get_configuration;
 use zero2prod::telemetry::{get_subscriber, init_subscriber};
 use zero2prod::startup::run;
 use once_cell::sync::Lazy;
 
 static TRACING: Lazy<()> = Lazy::new(||{
-    let subscriber = get_subscriber("test".into(), "debug".into());
+    let subscriber = get_subscriber("test".into(), "debug".into(), std::io::sink);
     init_subscriber(subscriber);
 });
 
