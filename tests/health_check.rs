@@ -1,5 +1,15 @@
 use std::net::TcpListener;
 use sqlx::{Pool, Postgres};
+use tracing::subscriber;
+use zero2prod::configuration::get_configuration;
+use zero2prod::telemetry::{get_subscriber, init_subscriber};
+use zero2prod::startup::run;
+use once_cell::sync::Lazy;
+
+static TRACING: Lazy<()> = Lazy::new(||{
+    let subscriber = get_subscriber("test".into(), "debug".into());
+    init_subscriber(subscriber);
+});
 
 
 #[sqlx::test(migrations = "./migrations")]
@@ -73,13 +83,20 @@ pub struct TestApp {
 
 async fn spawn_app(pool: Pool<Postgres>) -> TestApp {
 
+    //trace inclusion (also using once_cell to enforce singleton)
+    Lazy::force(&TRACING);
+
     let listener = TcpListener::bind("127.0.0.1:0")
         .expect("Failed to bind to an available port");
 
     let port = listener.local_addr().unwrap().port();
     let address = format!("http://127.0.0.1:{}", port);
 
-    let server = zero2prod::startup::run(listener, pool.clone())
+    //read config - NOTE: seems in conflict with sqlx::test macro
+    // let mut configuration = get_configuration().expect("Failed to read config");
+    // configuration.database.database_name = Uuid::new_v4().to_string();
+
+    let server = run(listener, pool.clone())
         .expect("Failed to bind server to address");
     let _ = tokio::spawn(server);
 
