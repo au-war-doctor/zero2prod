@@ -29,6 +29,7 @@ tracing-bunyan-formatter = "0.3.1"
 tracing-log = "0.2.0"
 tracing-actix-web = "0.7"
 
+
 [lib]
 path = "src/lib.rs"
 name = "zero2prod"
