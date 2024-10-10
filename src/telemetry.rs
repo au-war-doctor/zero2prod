@@ -1,6 +1,6 @@
 use tracing::{subscriber::set_global_default, Subscriber};
 use tracing_bunyan_formatter::{BunyanFormattingLayer, JsonStorageLayer};
-use tracing_subscriber::{layer::SubscriberExt, EnvFilter, Registry, layer::Layered, fmt::writer::MakeWriter};
+use tracing_subscriber::{layer::SubscriberExt, EnvFilter, Registry, fmt::writer::MakeWriter};
 use tracing_log::LogTracer;
 
 

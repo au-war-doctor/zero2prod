@@ -4,7 +4,7 @@ use actix_web::dev::Server;
 use sqlx::PgPool;
 use tracing_actix_web::TracingLogger;
 use std::net::TcpListener;
-use actix_web::middleware::Logger;
+
 
 
 pub fn run(listener: TcpListener,
