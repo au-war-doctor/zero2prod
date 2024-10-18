@@ -1,12 +1,16 @@
+variables:
+  CD_REGISTRY_IMAGE: "auwardoctor/email-newsletter"
+
 stages:
-  - build
+  - build_app
   - test
+  - build_image
 
 default:
   image: rust:slim 
 
-build:
-  stage: build
+build_app:
+  stage: build_app
   before_script:
     - apt update -qq && apt install -y -qq pkg-config && apt install -y -qq openssl
     - apt install -y -qq libssl-dev
@@ -25,5 +29,14 @@ test:
     - echo "Beginning test. . ."
     - cargo test
   tags:
-    - hpt730  
+    - hpt730
+
+build_image:
+  stage: build_image
+  needs: [build_app test]
+  script:
+    - docker pull $CD_REGISTRY_IMAGE:latest || true
+    - docker build --tag $CD_REGISTRY_IMAGE:latest --file Dockerfile .
+
+
 
