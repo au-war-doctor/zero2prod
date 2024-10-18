@@ -37,6 +37,8 @@ build_image:
   script:
     - docker pull $CD_REGISTRY_IMAGE:latest || true
     - docker build --tag $CD_REGISTRY_IMAGE:latest --file Dockerfile .
+  tags:
+    - hpt730
 
 
 
