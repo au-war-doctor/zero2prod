@@ -6,9 +6,6 @@ stages:
   - test
   - build_image
 
-before_script:
-  - docker login -u "auwardoctor"
-
 default:
   image: rust:slim 
 
@@ -23,17 +20,17 @@ build_app:
   tags:
     - hpt730
 
-test:
-  stage: test
-  needs: [build_app]
-  before_script:
-    - apt update -qq && apt install -y -qq pkg-config && apt install -y -qq openssl
-    - apt install -y -qq libssl-dev
-  script:
-    - echo "Beginning test. . ."
-    - cargo test
-  tags:
-    - hpt730
+# test:
+#   stage: test
+#   needs: [build_app]
+#   before_script:
+#     - apt update -qq && apt install -y -qq pkg-config && apt install -y -qq openssl
+#     - apt install -y -qq libssl-dev
+#   script:
+#     - echo "Beginning test. . ."
+#     - cargo test
+#   tags:
+#     - hpt730
 
 build_image:
   stage: build_image
