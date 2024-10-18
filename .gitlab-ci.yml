@@ -10,33 +10,33 @@ stages:
 default:
   image: rust:slim 
 
-# build_app:
-#   stage: build_app
-#   before_script:
-#     - apt update -qq && apt install -y -qq pkg-config && apt install -y -qq openssl
-#     - apt install -y -qq libssl-dev
-#   script: 
-#     - echo "Beginning build. . ."
-#     - cargo build --release
-#   tags:
-#     - hpt730
+build_app:
+  stage: build_app
+  before_script:
+    - apt update -qq && apt install -y -qq pkg-config && apt install -y -qq openssl
+    - apt install -y -qq libssl-dev
+  script: 
+    - echo "Beginning build. . ."
+    - cargo build --release
+  tags:
+    - hpt730
 
-# test:
-#   stage: test
-#   needs: [build_app]
-#   before_script:
-#     - apt update -qq && apt install -y -qq pkg-config && apt install -y -qq openssl
-#     - apt install -y -qq libssl-dev
-#   script:
-#     - echo "Beginning test. . ."
-#     - cargo test
-#   tags:
-#     - hpt730
+test:
+  stage: test
+  needs: [build_app]
+  before_script:
+    - apt update -qq && apt install -y -qq pkg-config && apt install -y -qq openssl
+    - apt install -y -qq libssl-dev
+  script:
+    - echo "Beginning test. . ."
+    - cargo test
+  tags:
+    - hpt730
 
 build_image:
   stage: build_image
   image: docker
-  #needs: [build_app]
+  needs: [build_app]
   script:
     - docker pull http://$CD_REGISTRY_NAME/$CD_REGISTRY_IMAGE:latest || true
     - docker build --tag $CD_REGISTRY_IMAGE:latest --file Dockerfile .
