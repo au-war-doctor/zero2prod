@@ -33,6 +33,7 @@ test:
 
 build_image:
   stage: build_image
+  image: gitlab/dind
   needs: [build_app, test]
   script:
     - docker pull $CD_REGISTRY_IMAGE:latest || true
