@@ -33,13 +33,15 @@ test:
 
 build_image:
   stage: build_image
-  image: gitlab/dind
-  needs: [build_app, test]
+  image: docker:dind
+  needs: [build_app]
   script:
     - docker pull $CD_REGISTRY_IMAGE:latest || true
     - docker build --tag $CD_REGISTRY_IMAGE:latest --file Dockerfile .
   tags:
     - hpt730
+  services:
+    - docker:dind
 
 
 
