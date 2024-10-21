@@ -41,6 +41,8 @@ build_image:
     #- docker pull $CD_REGISTRY_IMAGE:latest || true
     #- docker build --tag $CD_REGISTRY_IMAGE:latest --file Dockerfile .
     #- docker push $CD_REGISTRY_IMAGE:latest
+    - echo $CI_JOB_TOKEN
+    - echo $CI_REGISTRY
     - docker login -u auwardoctor
   tags:
     - hpt730
