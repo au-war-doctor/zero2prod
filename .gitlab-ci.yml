@@ -36,7 +36,7 @@ default:
 build_image:
   stage: build_image
   image: docker
-  needs: [build_app]
+  #needs: [build_app]
   script:
     - docker pull $CD_REGISTRY_IMAGE:latest || true
     - docker build --tag $CD_REGISTRY_IMAGE:latest --file Dockerfile .
