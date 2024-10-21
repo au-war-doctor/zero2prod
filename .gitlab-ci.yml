@@ -33,7 +33,7 @@ test:
     - apt install -y -qq libssl-dev
   script:
     - echo "Beginning test. . ."
-    - cargo test --bin target/release/zero2prod
+    - cargo test --bin zero2prod
   tags:
     - hpt730
 
