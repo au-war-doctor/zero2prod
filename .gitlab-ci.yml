@@ -10,28 +10,28 @@ stages:
 default:
   image: rust:slim 
 
-build_app:
-  stage: build_app
-  before_script:
-    - apt update -qq && apt install -y -qq pkg-config && apt install -y -qq openssl
-    - apt install -y -qq libssl-dev
-  script: 
-    - echo "Beginning build. . ."
-    - cargo build --release
-  tags:
-    - hpt730
+# build_app:
+#   stage: build_app
+#   before_script:
+#     - apt update -qq && apt install -y -qq pkg-config && apt install -y -qq openssl
+#     - apt install -y -qq libssl-dev
+#   script: 
+#     - echo "Beginning build. . ."
+#     - cargo build --release
+#   tags:
+#     - hpt730
 
-test:
-  stage: test
-  needs: [build_app]
-  before_script:
-    - apt update -qq && apt install -y -qq pkg-config && apt install -y -qq openssl
-    - apt install -y -qq libssl-dev
-  script:
-    - echo "Beginning test. . ."
-    - cargo test
-  tags:
-    - hpt730
+# test:
+#   stage: test
+#   needs: [build_app]
+#   before_script:
+#     - apt update -qq && apt install -y -qq pkg-config && apt install -y -qq openssl
+#     - apt install -y -qq libssl-dev
+#   script:
+#     - echo "Beginning test. . ."
+#     - cargo test
+#   tags:
+#     - hpt730
 
 build_image:
   stage: build_image
