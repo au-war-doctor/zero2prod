@@ -3,16 +3,15 @@ variables:
   CD_REGISTRY_NAME: "index.docker.io"
 
 stages:
-  - build_release
-  - test
-  - build_image
+  - compile
+  - deploy
 
 default:
   image: rust:slim 
 
 
 test:
-  stage: test
+  stage: compile
   before_script:
     - apt update -qq && apt install -y -qq pkg-config && apt install -y -qq openssl
     - apt install -y -qq libssl-dev
@@ -24,7 +23,7 @@ test:
 
 
 build_release:
-  stage: build_release
+  stage: compile
   before_script:
     - apt update -qq && apt install -y -qq pkg-config && apt install -y -qq openssl
     - apt install -y -qq libssl-dev
@@ -39,7 +38,7 @@ build_release:
 
 
 build_image:
-  stage: build_image
+  stage: deploy
   image: docker
   needs: [build_release]
   script:
