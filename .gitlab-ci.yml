@@ -21,6 +21,9 @@ build_app:
     - cargo build --release
   tags:
     - hpt730
+  artifacts:
+    paths:
+      - target/release/zero2prod
 
 test:
   stage: test
@@ -30,7 +33,7 @@ test:
     - apt install -y -qq libssl-dev
   script:
     - echo "Beginning test. . ."
-    - cargo test
+    - cargo test --bin target/release/zero2prod
   tags:
     - hpt730
 
