@@ -2,10 +2,6 @@ variables:
   CD_REGISTRY_IMAGE: "auwardoctor/email-newsletter"
   CD_REGISTRY_NAME: "index.docker.io"
 
-concurrent:
-  - test
-  - build_release
-
 stages:
   - build_release
   - test
