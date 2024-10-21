@@ -4,15 +4,28 @@ variables:
 
 
 stages:
-  - build_app
+  - build_release
   - test
   - build_image
 
 default:
   image: rust:slim 
 
-build_app:
-  stage: build_app
+
+test:
+  stage: test
+  before_script:
+    - apt update -qq && apt install -y -qq pkg-config && apt install -y -qq openssl
+    - apt install -y -qq libssl-dev
+  script:
+    - echo "Beginning test. . ."
+    - cargo test
+  tags:
+    - hpt730
+
+
+build_release:
+  stage: build_release
   before_script:
     - apt update -qq && apt install -y -qq pkg-config && apt install -y -qq openssl
     - apt install -y -qq libssl-dev
@@ -25,22 +38,11 @@ build_app:
     paths:
       - target/release/zero2prod
 
-test:
-  stage: test
-  needs: [build_app]
-  before_script:
-    - apt update -qq && apt install -y -qq pkg-config && apt install -y -qq openssl
-    - apt install -y -qq libssl-dev
-  script:
-    - echo "Beginning test. . ."
-    - cargo test -- --nocapture
-  tags:
-    - hpt730
 
 build_image:
   stage: build_image
   image: docker
-  needs: [build_app]
+  needs: [build_release]
   script:
     - docker pull $CD_REGISTRY_IMAGE:latest || true
     - docker build --tag $CD_REGISTRY_IMAGE:latest --file Dockerfile .
