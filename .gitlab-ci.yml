@@ -55,7 +55,8 @@ test_production:
     name: grafana/k6:0.54.0
     entrypoint: [""]
   script:
-    - k6
+    - echo "executing local k6 test for production environment . . ."
+    - k6 run ./load_tests/get.js
   tags:
     - hpt730
 
