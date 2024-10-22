@@ -51,8 +51,9 @@ build_image:
 
 test_production:
   stage: production
-  image: grafana/k6:0.54.0
-  entrypoint: [""]
+  image: 
+    name: grafana/k6:0.54.0
+    entrypoint: [""]
   script:
     - k6
   tags:
