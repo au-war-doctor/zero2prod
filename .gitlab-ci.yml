@@ -5,6 +5,7 @@ variables:
 stages:
   - compile
   - deploy
+  - production
 
 default:
   image: rust:slim 
@@ -45,6 +46,15 @@ build_image:
     - docker pull $CD_REGISTRY_IMAGE:latest || true
     - docker build --tag $CD_REGISTRY_IMAGE:latest --file Dockerfile .
     - docker push $CD_REGISTRY_IMAGE:latest
+  tags:
+    - hpt730
+
+test_production:
+  stage: production
+  image: grafana/k6:0.54.0
+  entrypoint: [""]
+  script:
+    - k6
   tags:
     - hpt730
 
